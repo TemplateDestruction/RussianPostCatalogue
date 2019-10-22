@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.russianpostcatalogue.ui.catalogue.CatalogueFragment"
+        android:label="Каталог"
+        tools:layout="@layout/fragment_catalogue" />
+
+    <fragment
+        android:id="@+id/nav_feedback"
+        android:name="com.example.russianpostcatalogue.ui.feeback.GalleryFragment"
+        android:label="@string/text_feedback"
+        tools:layout="@layout/fragment_feedback" />
+
+    <fragment
+        android:id="@+id/nav_subscriptions"
+        android:name="com.example.russianpostcatalogue.ui.subsscriptions.SubscriptionsFragment"
+        android:label="@string/text_subscriptions"
+        tools:layout="@layout/fragment_slideshow" />
+
+    <fragment
+        android:id="@+id/nav_partners"
+        android:name="com.example.russianpostcatalogue.ui.partners.PartnersFragment"
+        android:label="tools"
+        tools:layout="@layout/fragment_tools" />
+
+    <fragment
+        android:id="@+id/nav_share"
+        android:name="com.example.russianpostcatalogue.ui.share.ShareFragment"
+        android:label="share"
+        tools:layout="@layout/fragment_share" />
+
+    <fragment
+        android:id="@+id/nav_send"
+        android:name="com.example.russianpostcatalogue.ui.send.SendFragment"
+        android:label="send"
+        tools:layout="@layout/fragment_send" />
+    <fragment
+        android:id="@+id/authFragment"
+        android:name="com.example.russianpostcatalogue.ui.auth.AuthFragment"
+        android:label=" " />
+</navigation>

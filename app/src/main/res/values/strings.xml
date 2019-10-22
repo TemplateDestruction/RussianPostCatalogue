@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">RussianPostCatalogue</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_catalogue">Каталог</string>
+    <string name="text_feedback">Обратная связь</string>
+    <string name="text_subscriptions">Подписки</string>
+    <string name="text_partners">Партнерам</string>
+    <string name="pay">Оплатить</string>
+
+
+    <string-array name="goods_names">
+        <item>СЧЕТЧИК СЕ 102М S7 145-JV</item>
+        <item>СЧЕТЧИК ЛЕ 221.1.R2.P2</item>
+        <item>СЧЕТЧИК НЕВА МТ 112 AS O</item>
+        <item>СЧЕТЧИК НЕВА МТ 113 AS OP</item>
+        <item>СЧЕТЧИК КАСКАД-1МТ-W1-OV3</item>
+        <item>СЧЕТЧИК ЛЕ 221.1.К.R2.PO</item>
+        <item>СЧЕТЧИК ЛЕ 221.1.R2.DO</item>
+        <item>СЧЕТЧИК КАСКАД-1МТ-D5-OV3</item>
+        <item>СЧЕТЧИК ЛЕ 111.1.К.Р2</item>
+    </string-array>
+
+    <string-array name="goods_prices">
+        <item>3550</item>
+        <item>3900</item>
+        <item>3950</item>
+        <item>3950</item>
+        <item>3950</item>
+        <item>3900</item>
+        <item>3900</item>
+        <item>3950</item>
+        <item>2450</item>
+    </string-array>
+
+    <string-array name="cities">
+        <item>г. Санкт-Петербург</item>
+<!--        <item>г. Москва</item>-->
+<!--        <item>г. Новосибирск</item>-->
+<!--        <item>г. Екатеринбург</item>-->
+<!--        <item>г. Нижний Новгород</item>-->
+<!--        <item>г. Казань</item>-->
+<!--        <item>г. Челябинск</item>-->
+<!--        <item>г. Омск</item>-->
+<!--        <item>г. Самара</item>-->
+<!--        <item>г. Ростов-на-Дону</item>-->
+<!--        <item>г. Уфа</item>-->
+<!--        <item>г. Красноярск</item>-->
+<!--        <item>г. Воронеж</item>-->
+<!--        <item>г. Пермь</item>-->
+<!--        <item>г. Волгоград</item>-->
+    </string-array>
+</resources>
