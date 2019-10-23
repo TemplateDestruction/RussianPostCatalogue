@@ -47,4 +47,5 @@ public class ArrayAdapterWithContainsFilter<S> extends ArrayAdapter {
         }
         notifyDataSetChanged();
     }
+
 }

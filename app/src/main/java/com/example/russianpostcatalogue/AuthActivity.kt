@@ -2,12 +2,17 @@ package com.example.russianpostcatalogue
 
 import android.content.ContentValues
 import android.content.Intent
+import android.database.Observable
 import android.database.SQLException
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
+import androidx.core.widget.doAfterTextChanged
 import com.example.russianpostcatalogue.domain.db.DataBaseHelper
 import com.example.russianpostcatalogue.domain.spinerdialog.SpinnerDialog
 import kotlinx.android.synthetic.main.fragment_auth.*
@@ -15,6 +20,7 @@ import kotlin.collections.ArrayList
 import com.example.russianpostcatalogue.domain.db.DataBaseHelperus
 import com.example.russianpostcatalogue.ui.base.activity.BaseVm
 import com.jakewharton.rxbinding2.widget.RxTextView
+import com.jakewharton.rxbinding2.widget.afterTextChangeEvents
 import xyz.tusion.nrboom_app.presentation.view.base.activity.BaseActivity
 import xyz.tusion.nrboom_app.presentation.view.base.activity.BaseFragmentActivity
 import java.io.IOException
@@ -76,7 +82,7 @@ class AuthActivity : BaseFragmentActivity<AuthActivityVm>() {
             spinnerCityDialog.showSpinerDialog()
         }
 
-        spinnerStreetDialog = SpinnerDialog(this, ArrayList(), "Выберите улицу", "Закрыть")
+        spinnerStreetDialog = SpinnerDialog(this, ArrayList<String>(10), "Выберите улицу", "Закрыть")
         spinnerStreetDialog.setCancellable(true) // for cancellable
         spinnerStreetDialog.setShowKeyboard(false) // for open keyboard by default
         spinnerStreetDialog.bindOnSpinerListener { item, position ->
@@ -85,7 +91,7 @@ class AuthActivity : BaseFragmentActivity<AuthActivityVm>() {
             if (cursor.moveToFirst()) {
                 val index = cursor.getColumnIndex("name")
                 do {
-                    streets.add(cursor.getString(index))
+                    homes.add(cursor.getString(index))
                 } while (cursor.moveToNext())
                 fragAuth_home_layout.visibility = View.VISIBLE
             } else {
@@ -96,24 +102,31 @@ class AuthActivity : BaseFragmentActivity<AuthActivityVm>() {
         fragAuth_street_layout.setOnClickListener {
             spinnerStreetDialog.showSpinerDialog()
             rxBinds.addAll(
-                RxTextView.afterTextChangeEvents(spinnerStreetDialog.searchBox).subscribe {
-                    Log.e("cursor: ", it.view().text.toString())
-                    var cursor = dataBase.query(
-                        "streets",
-                        null,
-                        "streets.name like '%" + it.view().text.toString() + "%'",
-                        null,
-                        null,
-                        null,
-                        null
-                    )
-                    if (cursor.moveToFirst()) {
-                        val indexName = cursor.getColumnIndex("name")
-                        do {
-                            Log.e("sql cursor: ", cursor.getString(indexName) + " | ")
-                        } while (cursor.moveToNext())
+                RxTextView.afterTextChangeEvents(spinnerStreetDialog.searchBox).subscribe({
+                    if (it.view().text.isNotEmpty()) {
+                        var cursor = dataBase.query(
+                            "streets",
+                            null,
+                            "streets.name like '%" + it.view().text.toString() + "%'",
+                            null,
+                            null,
+                            null,
+                            null
+                        )
+                        if (cursor.moveToFirst()) {
+                            val indexName = cursor.getColumnIndex("name")
+                            val array = ArrayList<String>()
+                            do {
+                                array.add(cursor.getString(indexName))
+//                                Log.e("sql cursor: ", cursor.getString(indexName) + " | ")
+
+                            } while (cursor.moveToNext())
+//                            Log.e("win-win ", "gruzin")
+                            spinnerStreetDialog.setItems(array)
+                        }
                     }
-                })
+                }, { it.fillInStackTrace() })
+            )
         }
         spinnerHomeDialog = SpinnerDialog(this, homes, "Выберите дом", "Закрыть")
         spinnerHomeDialog.setCancellable(true) // for cancellable
@@ -121,7 +134,7 @@ class AuthActivity : BaseFragmentActivity<AuthActivityVm>() {
         spinnerHomeDialog.bindOnSpinerListener { item, position ->
             fragAuth_home_text.text = item.toString()
         }
-        fragAuth_street_layout.setOnClickListener {
+        fragAuth_home_layout.setOnClickListener {
             spinnerHomeDialog.showSpinerDialog()
         }
 
