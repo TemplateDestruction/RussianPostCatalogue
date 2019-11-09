@@ -7,11 +7,14 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_catalogue">Каталог</string>
+    <string name="menu_tape">Лента</string>
     <string name="text_feedback">Обратная связь</string>
     <string name="text_subscriptions">Подписки</string>
     <string name="text_partners">Партнерам</string>
     <string name="pay">Оплатить</string>
+    <string name="menu_intercom">Внутренная связь</string>
+    <string name="menu_reports">отчеты</string>
+    <string name="menu_settings">Настройки</string>
 
 
     <string-array name="goods_names">

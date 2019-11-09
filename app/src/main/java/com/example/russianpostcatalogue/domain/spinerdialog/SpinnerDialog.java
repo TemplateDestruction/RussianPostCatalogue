@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -15,14 +16,18 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.russianpostcatalogue.R;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -35,23 +40,23 @@ public class SpinnerDialog {
     String dTitle, closeTitle = "Close";
     OnSpinerItemClick onSpinerItemClick;
     AlertDialog alertDialog;
-    ArrayAdapterWithContainsFilter<String> adapter;
+    ArrayAdapterWithContainsFilter adapter;
     int pos;
     int style;
     boolean cancellable = false;
     boolean showKeyboard = false;
     boolean offlineMode = true;
     boolean useContainsFilter = false;
-    int titleColor,searchIconColor,searchTextColor,itemColor,itemDividerColor,closeColor;
+    int titleColor, searchIconColor, searchTextColor, itemColor, itemDividerColor, closeColor;
     EditText searchBox;
 
-    private void initColor(Context context){
-        this.titleColor=context.getResources().getColor(R.color.col_white);
-        this.searchIconColor=context.getResources().getColor(R.color.col_white);
-        this.searchTextColor=context.getResources().getColor(R.color.col_black);
-        this.itemColor=context.getResources().getColor(R.color.col_white);
-        this.closeColor=context.getResources().getColor(R.color.col_white);
-        this.itemDividerColor=context.getResources().getColor(R.color.col_white);
+    private void initColor(Context context) {
+        this.titleColor = context.getResources().getColor(R.color.col_white);
+        this.searchIconColor = context.getResources().getColor(R.color.col_white);
+        this.searchTextColor = context.getResources().getColor(R.color.col_black);
+        this.itemColor = context.getResources().getColor(R.color.col_white);
+        this.closeColor = context.getResources().getColor(R.color.col_white);
+        this.itemDividerColor = context.getResources().getColor(R.color.col_white);
     }
 
     public SpinnerDialog(Activity activity, ArrayList<String> items, String dialogTitle) {
@@ -96,15 +101,15 @@ public class SpinnerDialog {
         View v = context.getLayoutInflater().inflate(R.layout.dialog_layout, null);
         TextView rippleViewClose = (TextView) v.findViewById(R.id.close);
         TextView title = (TextView) v.findViewById(R.id.spinerTitle);
-        ImageView searchIcon=(ImageView) v.findViewById(R.id.searchIcon);
+        ImageView searchIcon = (ImageView) v.findViewById(R.id.searchIcon);
         rippleViewClose.setText(closeTitle);
         title.setText(dTitle);
-        final ListView listView = (ListView) v.findViewById(R.id.list);
+        final RecyclerView recyclerView = v.findViewById(R.id.list);
 
         ColorDrawable sage = new ColorDrawable(itemDividerColor);
         sage.setAlpha(46);
-        listView.setDivider(sage);
-        listView.setDividerHeight(1);
+//        recyclerView.setDivider(sage);
+//        recyclerView.setDividerHeight(1);
 
         searchBox = (EditText) v.findViewById(R.id.searchBox);
         if (isShowKeyboard()) {
@@ -118,36 +123,38 @@ public class SpinnerDialog {
 
 
 //        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, R.layout.items_view, items);
-        adapter = new ArrayAdapterWithContainsFilter<String>(context, R.layout.items_view, items) {
-            @NonNull
-            @Override
-            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-                TextView text1=view.findViewById(R.id.text1);
-                text1.setTextColor(itemColor);
-                return view;
-            }
-        };
+//        adapter = new ArrayAdapterWithContainsFilter(context, R.layout.items_view, items) {
+//            @NonNull
+//            @Override
+//            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+//                 View view = super.getView(position, convertView, parent);
+//                TextView text1=view.findViewById(R.id.text1);
+//                text1.setTextColor(itemColor);
+//                return view;
+//            }
+//        };
+        adapter = new ArrayAdapterWithContainsFilter(context, items);
 
-        listView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
         adb.setView(v);
         alertDialog = adb.create();
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(context.getResources().getColor(R.color.dialogColor)));
         alertDialog.getWindow().getAttributes().windowAnimations = style;//R.style.DialogAnimations_SmileWindow;
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                TextView t = (TextView) view.findViewById(R.id.text1);
-                for (int j = 0; j < items.size(); j++) {
-                    if (t.getText().toString().equalsIgnoreCase(items.get(j).toString())) {
-                        pos = j;
-                    }
-                }
-                onSpinerItemClick.onClick(t.getText().toString(), pos);
-                closeSpinerDialog();
-            }
-        });
+        adapter.setListener(onSpinerItemClick);
+//        recyclerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                TextView t = (TextView) view.findViewById(R.id.text1);
+//                for (int j = 0; j < items.size(); j++) {
+//                    if (t.getText().toString().equalsIgnoreCase(items.get(j).toString())) {
+//                        pos = j;
+//                    }
+//                }
+//                onSpinerItemClick.onClick(t.getText().toString(), pos);
+//                closeSpinerDialog();
+//            }
+//        });
 
         if (offlineMode) {
             searchBox.addTextChangedListener(new TextWatcher() {
@@ -163,11 +170,7 @@ public class SpinnerDialog {
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    if (isUseContainsFilter()) {
-                        adapter.getContainsFilter(searchBox.getText().toString());
-                    } else {
-                        adapter.getFilter().filter(searchBox.getText().toString());
-                    }
+                    adapter.getContainsFilter(searchBox.getText().toString());
                 }
             });
         }
@@ -214,7 +217,7 @@ public class SpinnerDialog {
         this.items.clear();
         this.items.addAll(items);
         adapter.notifyDataSetChanged();
-        Log.e("SetItems: ", "work");
+//        System.out.println("this.items: " + this.items);
 //        adapter.notifyDataSetInvalidated();
     }
 
@@ -278,4 +281,94 @@ public class SpinnerDialog {
     public EditText getSearchBox() {
         return searchBox;
     }
+}
+
+class ArrayAdapterWithContainsFilter extends RecyclerView.Adapter<ArrayAdapterWithContainsFilter.ArrayViewHolder> {
+
+    private List<String> items = null;
+    private ArrayList<String> arraylist;
+    Context context;
+
+    private OnSpinerItemClick listener;
+
+    public void setListener(OnSpinerItemClick listener) {
+        this.listener = listener;
+    }
+
+    public ArrayAdapterWithContainsFilter(Activity context, ArrayList<String> items) {
+        this.context = context;
+        this.items = items;
+        this.arraylist = new ArrayList<String>();
+        this.arraylist.addAll(items);
+    }
+
+
+    // Filter Class
+    public void getContainsFilter(String charText) {
+        charText = charText.toLowerCase(Locale.getDefault());
+        items.clear();
+        if (charText.length() == 0) {
+            items.addAll(arraylist);
+        } else {
+            for (String item : arraylist) {
+                if (item.toLowerCase(Locale.getDefault()).contains(charText)) {
+                    items.add(item);
+                }
+            }
+        }
+        notifyDataSetChanged();
+        System.out.println("items adapter: " + items);
+        System.out.println("arraylist adapter: " + arraylist);
+    }
+
+
+
+
+    @NonNull
+    @Override
+    public ArrayViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View itemView =
+                LayoutInflater.from(context).inflate(R.layout.youtube_channel, parent, false);
+        return new ArrayViewHolder(itemView.getRootView(), itemView.getRootView(), listener);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ArrayViewHolder holder, int position) {
+        holder.bind(items.get(position));
+    }
+
+
+    @Override
+    public int getItemCount() {
+        return items.size();
+    }
+
+
+    class ArrayViewHolder extends RecyclerView.ViewHolder {
+        private WeakReference<OnSpinerItemClick> listenerRef;
+
+        TextView text;
+
+        public ArrayViewHolder(@NonNull View rootView, @NonNull View itemView, @NonNull OnSpinerItemClick listener) {
+            super(itemView);
+            listenerRef = new WeakReference<>(listener);
+            text = itemView.findViewById(R.id.youtube_channel_name);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listenerRef.get().onClick(items.get(getAdapterPosition()), getAdapterPosition());
+//                    Log.e("ViewHolderClick: ", items.get(getAdapterPosition()));
+                }
+            });
+        }
+
+        void bind(String string) {
+            text.setText(string);
+        }
+
+
+
+    }
+
+
 }
